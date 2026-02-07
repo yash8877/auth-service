@@ -5,6 +5,8 @@ import com.authentication.service.MyUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,13 +20,21 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET}")
     private String secretkey;
 
     @Autowired
     private MyUserDetailsService userDetailsService;
+
+
+    @PostConstruct
+    public void checkSecret() {
+        log.info("JWT SECRET = [{}]",secretkey);
+    }
+
 
     public String generateToken(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
